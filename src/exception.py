@@ -1,5 +1,6 @@
 import sys
 import logging
+from src.logger import logging
 
 '''
 This function defines how the message should look like when an error occurs
