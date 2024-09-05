@@ -56,30 +56,30 @@ class DataIngestion:
 
 
 if __name__=="__main__":
-    # 创建总体进度条
+    # Create an overall progress bar
     with tqdm(total=4, desc="Overall Progress") as pbar:
-        # 数据摄取
+        # Data Ingestion
         pbar.set_description("Data Ingestion")
         obj = DataIngestion()
         train_data, test_data = obj.initiate_data_ingestion()
         pbar.update(1)
-        time.sleep(0.5)  # 为了演示效果，添加短暂延迟
+        time.sleep(0.5)  # Add short delay for demonstration
 
-        # 数据转换
+        # Data Transformation
         pbar.set_description("Data Transformation")
         data_transformation = DataTransformation()
         train_arr, test_arr, _ = data_transformation.initiate_data_transformation(train_data, test_data)
         pbar.update(1)
         time.sleep(0.5)
 
-        # 模型训练
+        # Model Training
         pbar.set_description("Model Training")
         modeltrain = ModelTrainer()
         results = modeltrain.initiate_model_trainer(train_arr, test_arr)
         pbar.update(1)
         time.sleep(0.5)
 
-        # 结果打印
+        # Printing Results
         pbar.set_description("Printing Results")
 
         print("\nAll Models Report:")
