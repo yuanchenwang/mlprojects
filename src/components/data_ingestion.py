@@ -11,6 +11,8 @@ from src.components.data_transformation import DataTransformationConfig
 
 from src.components.model_trainer import ModelTrainer, ModelTrainerConfig
 
+from tqdm import tqdm
+import time
 
 @dataclass
 class DataIngestionConfig:
@@ -54,11 +56,44 @@ class DataIngestion:
 
 
 if __name__=="__main__":
-    obj=DataIngestion()
-    train_data, test_data=obj.initiate_data_ingestion()
+    # 创建总体进度条
+    with tqdm(total=4, desc="Overall Progress") as pbar:
+        # 数据摄取
+        pbar.set_description("Data Ingestion")
+        obj = DataIngestion()
+        train_data, test_data = obj.initiate_data_ingestion()
+        pbar.update(1)
+        time.sleep(0.5)  # 为了演示效果，添加短暂延迟
 
-    data_transformation=DataTransformation()
-    train_arr, test_arr, _ = data_transformation.initiate_data_transformation(train_data, test_data)
+        # 数据转换
+        pbar.set_description("Data Transformation")
+        data_transformation = DataTransformation()
+        train_arr, test_arr, _ = data_transformation.initiate_data_transformation(train_data, test_data)
+        pbar.update(1)
+        time.sleep(0.5)
 
-    modeltrain = ModelTrainer()
-    print(modeltrain.initiate_model_trainer(train_arr, test_arr))
+        # 模型训练
+        pbar.set_description("Model Training")
+        modeltrain = ModelTrainer()
+        results = modeltrain.initiate_model_trainer(train_arr, test_arr)
+        pbar.update(1)
+        time.sleep(0.5)
+
+        # 结果打印
+        pbar.set_description("Printing Results")
+
+        print("\nAll Models Report:")
+        for model, details in results['all_models_report'].items():
+            print(f"{model}:")
+            print(f"  Test R2 Score: {details['test_r2_score']}")
+            print(f"  Train R2 Score: {details['train_r2_score']}")
+            print(f"  Best Parameters: {details['best_params']}")
+            print()
+
+        print(f"\nBest Model: {results['best_model_name']}")
+        print(f"Best Model Score: {results['best_model_score']}")
+        print(f"Best Model Parameters: {results['best_model_params']}")
+        print(f"Model saved at: {results['trained_model_file_path']}")
+        pbar.update(1)
+
+print("Process completed!")
